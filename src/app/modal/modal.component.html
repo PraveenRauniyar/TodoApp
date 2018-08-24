@@ -1,0 +1,31 @@
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Add Todo Here</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        Title: <input #title type="text" placeholder="Enter Your Title" name="title"  required ><br><br>
+        Description: <input #description type="text" placeholder="Enter Your Description" name="description" ><br><br>
+        Reminder:<input #reminder type="date"  name="Reminder" placeholder="yyyy-MM-dd" min="2013-01-01"  required />
+       <button type="button" class="btn btn-outline-dark" (click)="addTodo(title.value,description.value,reminder.value);c()">Save</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+<button class="btn btn-lg btn-outline-primary" (click)="open(content)">Add Todo</button>
+
+<hr>
+
+ <h2>Your Todo Item</h2>
+  <ul class="todo">
+    <li *ngFor="let todo of allTodoItems">
+      <span class="badge">Title: </span>{{todo.todoTitle}}<br><br>
+      <span class="badge">Description: </span>{{todo. description}}<br><br>
+      <span class="badge">Reminder: </span>{{todo.reminder}}<br><br>
+      <button class="button" (click)="removeTodo(todo)">Delete</button><br>
+    </li>
+  </ul>
