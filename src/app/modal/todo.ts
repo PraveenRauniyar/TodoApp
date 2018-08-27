@@ -4,7 +4,7 @@ export class Todo {
   reminder: string;
   todoId: LongRange;
 
-  constructor(title,description,reminder){
+  constructor(title, description, reminder) {
     this.todoTitle = title;
     this.description = description;
     this.reminder = reminder;

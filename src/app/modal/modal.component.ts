@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Todo} from './todo';
-import {DataService} from '../service/data.service';
 import {Headers, Http} from '@angular/http';
-
 
 @Component({
   selector: 'app-modal',
@@ -13,7 +11,7 @@ import {Headers, Http} from '@angular/http';
 export class ModalComponent implements OnInit {
   allTodoItems: Array<Todo>;
 
-  constructor(private http: Http, private modalService: NgbModal, private dataService: DataService) {
+  constructor(private http: Http, private modalService: NgbModal) {
 
   }
 

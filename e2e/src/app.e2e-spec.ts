@@ -15,7 +15,7 @@ describe('workspace-project App', () => {
 
   it('should show addTodoButton', function () {
     page.navigateTo();
-    expect(page.getAddTodoButton().getText()).toEqual("Add Todo")
+    expect(page.getAddTodoButton().getText()).toEqual('Add Todo');
   });
 
   it('should have Your todo item headers', function () {
@@ -25,20 +25,19 @@ describe('workspace-project App', () => {
 
 });
 
-describe("AddTodo modal popup", () => {
+describe('AddTodo modal popup', () => {
   let page: AppPage;
 
   beforeEach(() => {
     page = new AppPage();
-  })
+  });
 
   it('should go to addTodo pop after clicking addTodo button', function () {
     page.getAddTodoButton().click();
-    expect(page.getAddTodoPopupTitle().getText()).toEqual("Add Todo Here");
+    expect(page.getAddTodoPopupTitle().getText()).toEqual('Add Todo Here');
   });
 
   it('should have addTodo button on popup', function () {
-    expect(page.getSaveButtonOnAddTodoPopup().getText()).toEqual("Save");
+    expect(page.getSaveButtonOnAddTodoPopup().getText()).toEqual('Save');
   });
-
-})
+});

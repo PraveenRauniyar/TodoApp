@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {Headers} from '@angular/http';
-import {Todo} from "../modal/todo";
+import {Todo} from '../modal/todo';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -22,7 +22,7 @@ export class DataService {
   }
 
   saveTodo(todo: Todo) {
-    let httpOptions = {
+    const httpOptions = {
       headers: new Headers({
         'Content-Type': 'application/json'
       })
@@ -33,7 +33,7 @@ export class DataService {
     );
   }
 
-  deleteTodo(id: LongRange){
+  deleteTodo(id: LongRange) {
     return this.http.delete('http://localhost:8080/delete/' + id).subscribe(() => {
     }, err => console.error(err));
   }
