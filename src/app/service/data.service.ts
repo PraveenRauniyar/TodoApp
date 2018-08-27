@@ -3,11 +3,15 @@ import {Http} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {Headers} from '@angular/http';
 import {Todo} from "../modal/todo";
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
+
+  // result: boolean;
+  private error: boolean;
 
   constructor(public http: Http) {
     console.log('data service connected');
@@ -15,7 +19,6 @@ export class DataService {
 
   getAllTodo() {
     return this.http.get('http://localhost:8080').map(response => response.json());
-
   }
 
   saveTodo(todo: Todo) {
@@ -30,8 +33,8 @@ export class DataService {
     );
   }
 
-  deleteTodo(title: String){
-    return this.http.delete('http://localhost:8080/delete/' + title).subscribe(() => {
+  deleteTodo(id: LongRange){
+    return this.http.delete('http://localhost:8080/delete/' + id).subscribe(() => {
     }, err => console.error(err));
   }
 }
