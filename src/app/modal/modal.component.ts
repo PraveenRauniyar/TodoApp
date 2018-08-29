@@ -29,10 +29,10 @@ export class ModalComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
   }
 
-  getCategory(reminder) {
-    if (reminder === this.todayDate) {
+  public getTodoCategory(reminder, todayDate) {
+    if (reminder === todayDate) {
       return 'today';
-    } else if (reminder > this.todayDate) {
+    } else if (reminder > todayDate) {
       return 'upcoming';
     }
     return 'pending';
@@ -52,12 +52,12 @@ export class ModalComponent implements OnInit {
   }
 
   saveTodoInDatabase(todo, httpOptions) {
-    this.todoCategories = {'today': this.todayTodoItems, 'upcoming': this.upcomingTodoItems, 'pending': this.pendingTodoItems};
+    this.todoCategories = this.getCategoryWiseTodoList();
     this.http.post('http://localhost:8080/addTodo', JSON.stringify(todo), httpOptions)
       .map(response => response.json())
       .subscribe((todoId) => {
           todo.todoId = todoId;
-          this.todoCategories[this.getCategory(todo.reminder)].unshift(todo);
+          this.todoCategories[this.getTodoCategory(todo.reminder, this.todayDate)].unshift(todo);
           }, err => console.error(err)
       );
   }
@@ -73,14 +73,18 @@ export class ModalComponent implements OnInit {
   }
 
   removeTodo(todo: Todo) {
-    this.todoCategories = {'today': this.todayTodoItems, 'upcoming': this.upcomingTodoItems, 'pending': this.pendingTodoItems};
+    this.todoCategories = this.getCategoryWiseTodoList();
     this.http.delete('http://localhost:8080/delete/' + todo.todoId).subscribe(() => {
-       const category = this.getCategory(todo.reminder);
+       const category = this.getTodoCategory(todo.reminder, this.todayDate);
        this.todoCategories[category].splice(this.todoCategories[category].indexOf(todo, 1));
     }, err => console.error(err));
   }
 
-  hasMinimumOneTodo(todoItems: Array<Todo>) {
+  public hasMinimumOneTodo(todoItems: Array<Todo>) {
     return todoItems.length > 0;
+  }
+
+  private getCategoryWiseTodoList() {
+    return {'today': this.todayTodoItems, 'upcoming': this.upcomingTodoItems, 'pending': this.pendingTodoItems};
   }
 }
