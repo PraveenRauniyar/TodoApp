@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Todo} from './todo';
-import {Headers, Http} from '@angular/http';
 import {formatDate} from '@angular/common';
 import 'rxjs-compat/add/operator/map';
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
@@ -17,7 +16,7 @@ export class ModalComponent implements OnInit {
   todayDate: string;
   private todoCategories: { 'today': Array<Todo>; 'upcoming': Array<Todo>; 'pending': Array<Todo> };
 
-  constructor(private http: Http, private modalService: NgbModal) {
+  constructor(private http: HttpClient, private modalService: NgbModal) {
     this.todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US', '+0530');
   }
 
@@ -44,9 +43,7 @@ export class ModalComponent implements OnInit {
     }
     const todo = new Todo(title, description, reminder);
     const httpOptions = {
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      })
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
     this.saveTodoInDatabase(todo, httpOptions);
   }
@@ -54,7 +51,6 @@ export class ModalComponent implements OnInit {
   saveTodoInDatabase(todo, httpOptions) {
     this.todoCategories = this.getCategoryWiseTodoList();
     this.http.post('http://localhost:8080/addTodo', JSON.stringify(todo), httpOptions)
-      .map(response => response.json())
       .subscribe((todoId) => {
           todo.todoId = todoId;
           this.todoCategories[this.getTodoCategory(todo.reminder, this.todayDate)].unshift(todo);
@@ -64,8 +60,7 @@ export class ModalComponent implements OnInit {
 
   getTodoItems() {
     this.http.get('http://localhost:8080')
-      .map(response => response.json())
-      .subscribe((todoItems) => {
+      .subscribe((todoItems: Array<Todo>) => {
         this.todayTodoItems = todoItems.filter((todoItem) => todoItem.reminder === this.todayDate);
         this.upcomingTodoItems = todoItems.filter((todoItem) => todoItem.reminder > this.todayDate);
         this.pendingTodoItems = todoItems.filter((todoItem) => todoItem.reminder < this.todayDate);
