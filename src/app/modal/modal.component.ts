@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Todo} from './todo';
 import {Headers, Http} from '@angular/http';
+import {formatDate} from '@angular/common';
+import 'rxjs-compat/add/operator/map';
 
 @Component({
   selector: 'app-modal',
@@ -9,10 +11,14 @@ import {Headers, Http} from '@angular/http';
   styleUrls: ['./modal.component.css']
 })
 export class ModalComponent implements OnInit {
-  allTodoItems: Array<Todo>;
+  todayTodoItems: Array<Todo>;
+  pendingTodoItems: Array<Todo>;
+  upcomingTodoItems: Array<Todo>;
+  todayDate: string;
+  private todoCategories: { 'today': Array<Todo>; 'upcoming': Array<Todo>; 'pending': Array<Todo> };
 
   constructor(private http: Http, private modalService: NgbModal) {
-
+    this.todayDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US', '+0530');
   }
 
   ngOnInit() {
@@ -21,6 +27,15 @@ export class ModalComponent implements OnInit {
 
   open(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
+  }
+
+  getCategory(reminder) {
+    if (reminder === this.todayDate) {
+      return 'today';
+    } else if (reminder > this.todayDate) {
+      return 'upcoming';
+    }
+    return 'pending';
   }
 
   addTodo(title, description, reminder) {
@@ -37,27 +52,35 @@ export class ModalComponent implements OnInit {
   }
 
   saveTodoInDatabase(todo, httpOptions) {
+    this.todoCategories = {'today': this.todayTodoItems, 'upcoming': this.upcomingTodoItems, 'pending': this.pendingTodoItems};
     this.http.post('http://localhost:8080/addTodo', JSON.stringify(todo), httpOptions)
       .map(response => response.json())
       .subscribe((todoId) => {
           todo.todoId = todoId;
-          this.allTodoItems.unshift(todo);
-        }, err => console.error(err)
+          this.todoCategories[this.getCategory(todo.reminder)].unshift(todo);
+          }, err => console.error(err)
       );
   }
 
   getTodoItems() {
     this.http.get('http://localhost:8080')
       .map(response => response.json())
-      .subscribe((todo) => {
-        this.allTodoItems = todo;
+      .subscribe((todoItems) => {
+        this.todayTodoItems = todoItems.filter((todoItem) => todoItem.reminder === this.todayDate);
+        this.upcomingTodoItems = todoItems.filter((todoItem) => todoItem.reminder > this.todayDate);
+        this.pendingTodoItems = todoItems.filter((todoItem) => todoItem.reminder < this.todayDate);
       });
   }
 
   removeTodo(todo: Todo) {
-    const index = this.allTodoItems.indexOf(todo);
-    return this.http.delete('http://localhost:8080/delete/' + todo.todoId).subscribe(() => {
-      this.allTodoItems.splice(index, 1);
+    this.todoCategories = {'today': this.todayTodoItems, 'upcoming': this.upcomingTodoItems, 'pending': this.pendingTodoItems};
+    this.http.delete('http://localhost:8080/delete/' + todo.todoId).subscribe(() => {
+       const category = this.getCategory(todo.reminder);
+       this.todoCategories[category].splice(this.todoCategories[category].indexOf(todo, 1));
     }, err => console.error(err));
+  }
+
+  hasMinimumOneTodo(todoItems: Array<Todo>) {
+    return todoItems.length > 0;
   }
 }

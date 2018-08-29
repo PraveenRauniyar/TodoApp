@@ -7,8 +7,10 @@
     "build": "ng build",
     "test": "ng test ",
     "lint": "ng lint ",
-    "precommit": "ng e2e && ng lint",
     "pre-push": "ng e2e && ng lint",
+    "precommit": "ng test --code-coverage && ng e2e && ng lint",
+    "test:coverage": "ng test --code-coverage",
+    "test:sr:coverage": "ng test --single-run --code-coverage",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -26,6 +28,7 @@
     "@ng-bootstrap/schematics": "^2.0.0-alpha.1",
     "bootstrap": "^4.0.0",
     "core-js": "^2.5.4",
+    "istanbul": "^0.4.5",
     "rxjs": "^6.0.0",
     "rxjs-compat": "^6.2.2",
     "zone.js": "~0.8.26"
@@ -44,6 +47,7 @@
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "^3.0.0",
     "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage": "^1.1.2",
     "karma-coverage-istanbul-reporter": "^2.0.1",
     "karma-jasmine": "^1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",

@@ -60,3 +60,16 @@
   margin-right: .8em;
   border-radius: 4px 0 0 4px;
 }
+
+.todayTodoItems{
+  font-size: 40px;
+  color: #008800;
+}
+.upcomingTodoItems{
+  font-size: 40px;
+  color:blue;
+}
+.pendingTodoItems{
+  font-size: 40px;
+  color: red;
+}

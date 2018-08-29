@@ -8,10 +8,12 @@
   <div class="modal-body">
     <form>
       <div class="form-group">
-        Title: <input #title type="text" placeholder="Enter Your Title" name="title"  required ><br><br>
-        Description: <input #description type="text" placeholder="Enter Your Description" name="description" ><br><br>
-        Reminder:<input #reminder type="date"  name="Reminder" placeholder="yyyy-MM-dd" min="2013-01-01"  required />
-       <button type="button" class="btn btn-outline-dark" (click)="addTodo(title.value,description.value,reminder.value);c()">Save</button>
+        Title: <input #title type="text" placeholder="Enter Your Title" name="title" required><br><br>
+        Description: <input #description type="text" placeholder="Enter Your Description" name="description"><br><br>
+        Reminder:<input #reminder type="date" name="Reminder" placeholder="yyyy-MM-dd" min={{todayDate}} required/>
+        <button type="button" class="btn btn-outline-dark"
+                (click)="addTodo(title.value,description.value,reminder.value);c()">Save
+        </button>
       </div>
     </form>
   </div>
@@ -19,13 +21,41 @@
 <button class="btn btn-lg btn-outline-primary" (click)="open(content)">Add Todo</button>
 
 <hr>
-
- <h2>Your Todo Item</h2>
+<div *ngIf="hasMinimumOneTodo(todayTodoItems)">
+  <label class="todayTodoItems">Today's Todo Item</label>
   <ul class="todo">
-    <li *ngFor="let todo of allTodoItems">
+    <li *ngFor="let todo of todayTodoItems">
       <span class="badge">Title: </span>{{todo.todoTitle}}<br><br>
       <span class="badge">Description: </span>{{todo. description}}<br><br>
       <span class="badge">Reminder: </span>{{todo.reminder}}<br><br>
-      <button class="button" (click)="removeTodo(todo)">Delete</button><br>
+      <button class="button" (click)="removeTodo(todo)">Delete</button>
+      <br>
     </li>
   </ul>
+</div>
+
+<div *ngIf="hasMinimumOneTodo(upcomingTodoItems)">
+  <label class="upcomingTodoItems">Upcoming Todo Item</label>
+  <ul class="todo">
+    <li *ngFor="let todo of upcomingTodoItems">
+      <span class="badge">Title: </span>{{todo.todoTitle}}<br><br>
+      <span class="badge">Description: </span>{{todo. description}}<br><br>
+      <span class="badge">Reminder: </span>{{todo.reminder}}<br><br>
+      <button class="button" (click)="removeTodo(todo)">Delete</button>
+      <br>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="hasMinimumOneTodo(pendingTodoItems)">
+  <label class="pendingTodoItems">Pending Todo Item</label>
+  <ul class="todo">
+    <li *ngFor="let todo of pendingTodoItems">
+      <span class="badge">Title: </span>{{todo.todoTitle}}<br><br>
+      <span class="badge">Description: </span>{{todo. description}}<br><br>
+      <span class="badge">Reminder: </span>{{todo.reminder}}<br><br>
+      <button class="button" (click)="removeTodo(todo)">Delete</button>
+      <br>
+    </li>
+  </ul>
+</div>
